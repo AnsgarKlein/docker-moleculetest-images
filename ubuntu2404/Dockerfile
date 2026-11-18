@@ -1,4 +1,4 @@
-FROM ubuntu:26.04
+FROM ubuntu:24.04
 
 LABEL maintainer="Ansgar Klein"
 
@@ -10,7 +10,7 @@ RUN apt-get update \
        man-db \
        unminimize\
     && yes | unminimize \
-    # Install python \
+    # Install systemd \
     && apt-get install -y --no-install-recommends \
        libbpf1 \
        systemd \
@@ -21,5 +21,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-VOLUME ["/sys/fs/cgroup", "/run"]
+# We need to mount hosts `/sys/fs/cgroup` read-writeable into container for
+# systemd to work.
+VOLUME ["/sys/fs/cgroup"]
 CMD ["/lib/systemd/systemd"]
