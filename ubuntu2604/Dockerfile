@@ -10,6 +10,7 @@ RUN apt-get update \
        man-db \
        unminimize\
     && yes | unminimize \
+    && apt-get purge -y unminimize \
     # Install systemd \
     && apt-get install -y --no-install-recommends \
        libbpf1 \
