@@ -1,0 +1,15 @@
+FROM rockylinux:8
+
+LABEL maintainer="Ansgar Klein"
+
+RUN /bin/true \
+    # Install systemd \
+    && dnf -y install systemd \
+    # Install python \
+    && dnf -y install python3 \
+    && dnf clean all
+
+# We need to mount hosts `/sys/fs/cgroup` read-writeable into container for
+# systemd to work.
+VOLUME ["/sys/fs/cgroup"]
+CMD ["/lib/systemd/systemd"]
