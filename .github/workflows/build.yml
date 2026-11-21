@@ -1,0 +1,55 @@
+---
+name: Build container images
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 1 * * 5"
+
+jobs:
+  discover-images:
+    name: Discover buildable images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      images: ${{ steps.list-images.outputs.images }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3"
+
+      - name: Discover images
+        id: list-images
+        run: |
+          images=$(python build.py --list-images)
+          echo "images=$images" >> "$GITHUB_OUTPUT"
+
+  build-image:
+    name: Build container image ${{ matrix.image }}
+    needs: discover-images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJSON(needs.discover-images.outputs.images) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3"
+
+      - name: Build container image
+        env:
+          IMAGE: ${{ matrix.image }}
+        run: python build.py "$IMAGE"

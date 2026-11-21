@@ -10,6 +10,7 @@ Build Docker images from directories containing Dockerfiles.
 # ruff: disable[UP006]
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -105,14 +106,29 @@ def main() -> int:
         metavar='IMAGE',
         help='Image directories to build (default: build all images).',
     )
+    parser.add_argument(
+        '--list-images',
+        action='store_true',
+        help='Print all image directory names as JSON without building.',
+    )
     args = parser.parse_args()
 
     # Abort if we did not find any image directories
     if not all_image_dirs:
         parser.error('No image directories containing a Dockerfile were found.')
 
-    # Check if given image directories are valid
+    # Get image dir names for paths
     all_image_dir_names = [d.name for d in all_image_dirs]
+
+    # Check that `--list-images` is not combined with specific images
+    # (which wouldn't hurt but not make sense)
+    if args.list_images:
+        if args.images:
+            parser.error('--list-images cannot be combined with image names.')
+        print(json.dumps(all_image_dir_names, separators=(',', ':')))
+        return 0
+
+    # Check if given image directories are valid
     for given_dir in [d.strip('/') for d in args.images]:
         if given_dir not in all_image_dir_names:
             parser.error(
