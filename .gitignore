@@ -1,5 +1,7 @@
 # Python
 __pycache__/
+/.mypy_cache/
+/.ruff_cache/
 
 # Python environment
 /.env/
@@ -8,6 +10,3 @@ __pycache__/
 /venv/
 /ENV/
 /VENV/
-
-# mypy
-/.mypy_cache/
