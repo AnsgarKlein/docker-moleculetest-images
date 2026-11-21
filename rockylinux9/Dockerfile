@@ -2,7 +2,7 @@ FROM rockylinux/rockylinux:9
 
 LABEL maintainer="Ansgar Klein"
 
-# Don't skipp installation of documentation
+# Don't skip installation of documentation
 RUN sed -i 's/tsflags=nodocs//' /etc/yum.conf
 
 RUN dnf -y install rpm dnf-plugins-core \
