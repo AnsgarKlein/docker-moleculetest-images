@@ -61,6 +61,7 @@ jobs:
       - name: Build container image
         env:
           IMAGE: ${{ matrix.image_dir }}
+        timeout-minutes: 30
         run: python build.py "$IMAGE"
 
       - name: Log in to Docker Hub
@@ -78,6 +79,7 @@ jobs:
           github.ref_name == github.event.repository.default_branch
         env:
           IMAGE_NAME: ${{ matrix.image_name }}
+        timeout-minutes: 30
         run: |
           local_image="$IMAGE_NAME:latest"
           remote_image="ansgarklein/$local_image"
