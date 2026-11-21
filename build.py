@@ -65,7 +65,7 @@ def build_image_from_dir(image_dir: Path, pull: bool = True) -> int:
     print(f'Building {tag} ...')
     try:
         # Put together docker command string
-        cmd = ['docker', 'build']
+        cmd = ['docker', 'buildx', 'build']
         if pull:
             cmd.append('--pull')
         cmd.append(str(image_dir))
