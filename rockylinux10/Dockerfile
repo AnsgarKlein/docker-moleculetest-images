@@ -5,7 +5,7 @@ LABEL maintainer="Ansgar Klein"
 # Don't skip installation of documentation
 RUN sed -i 's/tsflags=nodocs//' /etc/yum.conf
 
-RUN dnf -y install rpm dnf-plugins-core \
+RUN /bin/true \
     # Install systemd \
     && dnf -y install systemd \
     # Install python \
