@@ -7,6 +7,9 @@ on:
   schedule:
     - cron: "15 1 * * 5"
 
+permissions:
+  contents: read
+
 jobs:
   discover-images:
     name: Discover buildable images
