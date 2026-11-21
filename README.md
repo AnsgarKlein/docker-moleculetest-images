@@ -31,7 +31,8 @@ Build one or more images by directory name:
 
 ```sh
 python3 build.py ubuntu2604
-python3 build.py rockylinux9 almalinux10
+python3 build.py ubuntu2604 rockylinux9
+python3 build.py rockylinux*
 ```
 
 ## Run a container
