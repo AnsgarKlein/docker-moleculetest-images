@@ -109,7 +109,7 @@ def main() -> int:
     parser.add_argument(
         '--list-images',
         action='store_true',
-        help='Print all image directory names as JSON without building.',
+        help='Print image directories and image names as JSON without building.',
     )
     args = parser.parse_args()
 
@@ -125,7 +125,16 @@ def main() -> int:
     if args.list_images:
         if args.images:
             parser.error('--list-images cannot be combined with image names.')
-        print(json.dumps(all_image_dir_names, separators=(',', ':')))
+
+        # Print all images as json and exit
+        images = [
+            {
+                'image_dir': image_dir.name,
+                'image_name': get_image_tag_for_image_dir(image_dir),
+            }
+            for image_dir in all_image_dirs
+        ]
+        print(json.dumps(images, indent=4))
         return 0
 
     # Check if given image directories are valid

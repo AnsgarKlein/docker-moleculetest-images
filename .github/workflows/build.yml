@@ -28,10 +28,15 @@ jobs:
         id: list-images
         run: |
           images=$(python build.py --list-images)
-          echo "images=$images" >> "$GITHUB_OUTPUT"
+          echo "$images"
+          {
+            echo 'images<<EOF'
+            echo "$images"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
   build-image:
-    name: Build container image ${{ matrix.image }}
+    name: Build ${{ matrix.image_dir }}
     needs: discover-images
     runs-on: ubuntu-latest
     permissions:
@@ -39,7 +44,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: ${{ fromJSON(needs.discover-images.outputs.images) }}
+        include: ${{ fromJSON(needs.discover-images.outputs.images) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -51,5 +56,5 @@ jobs:
 
       - name: Build container image
         env:
-          IMAGE: ${{ matrix.image }}
+          IMAGE: ${{ matrix.image_dir }}
         run: python build.py "$IMAGE"
